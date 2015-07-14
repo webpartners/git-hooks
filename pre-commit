@@ -1,0 +1,16 @@
+#!/usr/local/bin/python
+
+import pexpect
+
+class bcolors:
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+forbidden = ['PREVENT_COMMIT', 'NO_COMMIT', 'dsm', 'console.log', 'debugger']
+
+for i in forbidden:
+	output = pexpect.run('git --no-pager diff --cached')
+	for line in iter(output.splitlines()):
+		if i in line:
+			print bcolors.FAIL + 'COMMIT REJECTED Found "{0}" references. Please remove them before commiting'.format(i) + bcolors.ENDC
+			exit(1)
